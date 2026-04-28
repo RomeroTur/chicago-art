@@ -2,7 +2,7 @@ import { z } from "zod";
 import { useEffect, useState } from "react";
 import { ArtworkSchema } from "./schemas/artwork";
 import type { ArtworkProps } from "./schemas/artwork";
-import Artwork from "./components/Artwork";
+import ArtworkCard from "./components/ArtworkCard";
 
 const URL_BASE = "https://api.artic.edu/api/v1/artworks";
 
@@ -105,7 +105,7 @@ function App() {
 
 			{artworksArray && artworksArray.length > 0 ? (
 				artworksArray.map((item) => (
-					<Artwork
+					<ArtworkCard
 						key={item.id}
 						id={item.id}
 						title={item.title}
