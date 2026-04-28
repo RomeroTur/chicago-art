@@ -1,14 +1,10 @@
 import { z } from "zod";
 import { useEffect, useState } from "react";
+import { ArtworkSchema } from "./schemas/artwork";
+import type { ArtworkProps } from "./schemas/artwork";
+import Artwork from "./components/Artwork";
 
 const URL_BASE = "https://api.artic.edu/api/v1/artworks";
-
-const ArtworkSchema = z.object({
-	id: z.number({ error: "id num pls" }),
-	artist_title: z.string({ error: "artist str pls" }).nullable().optional(),
-	title: z.string({ error: "title str pls" }),
-	image_id: z.string({ error: "img id str pls" }).nullable().optional(),
-});
 
 const AICDataSchema = z.object({
 	pagination: z
@@ -24,22 +20,10 @@ const AICDataSchema = z.object({
 	data: z.array(ArtworkSchema),
 });
 
-export type Artwork = z.infer<typeof ArtworkSchema>;
-
 const SearchSchema = z.string().min(3, { message: "at least 3 chars!!" });
 
-function validateArtwork(item: Artwork) {
-	const { data, success } = ArtworkSchema.safeParse(item);
-	if (!success) return;
-	return (
-		<div key={data.id}>
-			{data.title} by {data.artist_title ?? "unknown"}
-		</div>
-	);
-}
-
 function App() {
-	const [artworksArray, setArtworksArray] = useState<Artwork[]>([]);
+	const [artworksArray, setArtworksArray] = useState<ArtworkProps[]>([]);
 	const [fetchErrors, setFetchErrors] = useState<string[]>([]);
 	const [searchQuery, setSearchQuery] = useState<string | undefined>();
 	const [searchStringError, setSearchStringError] = useState<string>("");
@@ -120,9 +104,15 @@ function App() {
 			</div>
 
 			{artworksArray && artworksArray.length > 0 ? (
-				artworksArray.map((item) => {
-					return validateArtwork(item);
-				})
+				artworksArray.map((item) => (
+					<Artwork
+						key={item.id}
+						id={item.id}
+						title={item.title}
+						artist_title={item.artist_title}
+						image_id={item.image_id}
+					/>
+				))
 			) : (
 				<p>No artwork</p>
 			)}
