@@ -1,10 +1,11 @@
 import type { ArtworkProps } from "../schemas/artwork";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const STORAGE_ITEM = "itemsStored";
 
 const useLocalStorage = () => {
 	const [items, setItems] = useState<ArtworkProps[]>(() => {
-		const itemsStoredString: string | null =
-			localStorage.getItem("itemsStored");
+		const itemsStoredString = localStorage.getItem(STORAGE_ITEM);
 
 		if (!itemsStoredString) return [];
 
@@ -15,16 +16,18 @@ const useLocalStorage = () => {
 		}
 	});
 
+	useEffect(() => {
+		localStorage.setItem(STORAGE_ITEM, JSON.stringify(items));
+	}, [items]);
+
 	function addItem(Obj: ArtworkProps) {
 		setItems((prevItems) => {
 			const isIn = prevItems.some((item) => Obj.id === item.id);
-			return !isIn ? [...prevItems, Obj] : [...prevItems];
+			return isIn ? prevItems : [...prevItems, Obj];
 		});
 	}
 
-	function removeItem(Obj: ArtworkProps) {}
-
-	return { addItem, removeItem, items };
+	return { addItem, items };
 };
 
 export default useLocalStorage;

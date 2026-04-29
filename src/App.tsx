@@ -4,7 +4,11 @@ import { ArtworkSchema } from "./schemas/artwork";
 import type { ArtworkProps } from "./schemas/artwork";
 import ArtworkCard from "./components/ArtworkCard";
 
+//import { BrowserRouter, Routes, Route, Outlet } from "react-router";
+
 const URL_BASE = "https://api.artic.edu/api/v1/artworks";
+
+import useLocalStorage from "./hooks/useLocalStorage";
 
 const AICDataSchema = z.object({
 	pagination: z
@@ -27,6 +31,8 @@ function App() {
 	const [fetchErrors, setFetchErrors] = useState<string[]>([]);
 	const [searchQuery, setSearchQuery] = useState<string | undefined>();
 	const [searchStringError, setSearchStringError] = useState<string>("");
+
+	const { addItem } = useLocalStorage();
 
 	useEffect(() => {
 		const url = searchQuery
@@ -111,6 +117,7 @@ function App() {
 						title={item.title}
 						artist_title={item.artist_title}
 						image_id={item.image_id}
+						addFn={addItem}
 					/>
 				))
 			) : (

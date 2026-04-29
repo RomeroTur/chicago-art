@@ -8,3 +8,7 @@ export const ArtworkSchema = z.object({
 });
 
 export type ArtworkProps = z.infer<typeof ArtworkSchema>;
+
+export interface AddArtworkProps extends ArtworkProps {
+	addFn: (obj: ArtworkProps) => void;
+}
